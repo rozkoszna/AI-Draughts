@@ -29,3 +29,7 @@ class Piece:
     # Return piece's location as a Position class
     def position(self):
         return Position(self.y, self.x)
+    def __str__(self):
+        return str(self.x) + ", " + str(self.y)
+    def __repr__(self):
+        return self.__str__()
