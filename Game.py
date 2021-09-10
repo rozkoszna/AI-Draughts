@@ -1,3 +1,4 @@
+import time
 from PIL import Image, ImageColor
 import IPython.display
 
@@ -31,6 +32,7 @@ class Game:
         self.black = black
         self.continue_game = True
         self.result = {'moves': [], 'winner': ''}
+        self.move_length = 1
     
     
     # Helping function to encode moves in a form in which we'll store them in result
@@ -47,6 +49,7 @@ class Game:
         move = bot.make_move(self.engine.board)
         self.result['moves'] += [Game.move_to_dictionary(move)]
         
+        start_time = time.time()
         try:
             self.engine.make_move(move)
         except ValueError as ve:
@@ -57,15 +60,21 @@ class Game:
             ve.args[1].show()
             self.continue_game = False
             return
+        end_time = time.time()
+        time_elapsed = end_time - start_time
+        if time_elapsed < self.move_length:
+            time.sleep(self.move_length - time_elapsed)
             
         if draw_board:
             IPython.display.clear_output()
             self.engine.board.show(is_white)
 
-        if (self.engine.board.white_lost()):
-            print("WHITE WINS" if is_white else "BLACK WINS")
-            self.result['winner'] = 'white' if is_white else 'black'
-            self.engine.board.show()
+        if (self.engine.game_finished):
+            if not self.engine.draw:
+                print("WHITE WINS" if is_white else "BLACK WINS")
+                self.result['winner'] = 'white' if is_white else 'black'
+            else:
+                print("DRAW")
             self.continue_game = False
     
     
@@ -95,10 +104,12 @@ class Game:
             IPython.display.clear_output()
             self.engine.board.show(is_white)
 
-        if (self.engine.board.white_lost()):
-            print("WHITE WINS" if is_white else "BLACK WINS")
-            self.result['winner'] = 'white' if is_white else 'black'
-            self.engine.board.show()
+        if (self.engine.game_finished):
+            if not self.engine.draw:
+                print("WHITE WINS" if is_white else "BLACK WINS")
+                self.result['winner'] = 'white' if is_white else 'black'
+            else:
+                print("DRAW")
             self.continue_game = False
     
     

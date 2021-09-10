@@ -1,8 +1,6 @@
 from Position import Position
 from Board import Board
 
-from func_timeout import func_timeout, FunctionTimedOut
-
 # This class holds a full state of the game: a board (as a Board class), an information wether it's the white player's move, and an information wether the game has already finished because one of the players lost
 
 # If a player attempts to make a move which isn't allowed (e. g. move a piece outside of a board, capture more than two enemy's pieces at the same time, move not diagonally, etc., they loose
@@ -13,6 +11,7 @@ class Engine:
         self.game_finished = False
         self.boring_moves = 0
         self.limit_boring_moves = 25
+        self.draw = False
     
     # Returns a safe copy of a board
     def get_board(self):
@@ -24,18 +23,19 @@ class Engine:
         if len(moves) == 2:
             if self.board.world[moves[0].y][moves[0].x] != None:
                 if self.board.world[moves[0].y][moves[0].x].king:
-                    if moves[1].y == moves[0].y:
-                        boring_move = True
+                    boring_move = True
           
         if boring_move:
             self.boring_moves += 1
+            print(self.boring_moves)
         else:
             self.boring_moves = 0
             
         if self.boring_moves >= self.limit_boring_moves:
             winner = "draw"
+            print("draw")
             self.game_finished = True
-            print("A game finished with a draw")
+            self.draw = True
         
         
         new_board = self.board
